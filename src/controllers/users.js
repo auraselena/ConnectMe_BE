@@ -21,7 +21,6 @@ module.exports = {
   },
   login: (req, res) => {
     // let scriptQuery = `Select * from users;`;
-    console.log("data dari req.body: ", req.body);
     // if (req.query.username) {
     // let data = db.query(`Select id, username, email, password from users where username=${db.escape(req.body.mix)} or email=${db.escape(req.body.mix)};`);
     // console.log("cek mix: ", data);
@@ -30,7 +29,6 @@ module.exports = {
         res.status(500).send(err);
       } else {
         // res.status(200).send(result);
-        console.log("cek result login", result);
         const cek = bcrypt.compareSync(req.body.password, result[0].password);
         console.log(cek);
         if (cek) {
@@ -46,13 +44,11 @@ module.exports = {
     });
   },
   register: (req, res) => {
-    console.log("data dari req.body: ", req.body);
     let { username, email, password, inputPassword } = req.body;
     db.query(`SELECT * from users where username=${db.escape(username)} or email=${db.escape(email)}`, (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }
-      console.log("tanda register", result);
       if (result.length > 0) {
         return res.status(200).send({ success: false, message: "Username or e-mail has already exist." });
       } else {
@@ -96,19 +92,15 @@ module.exports = {
     });
   },
   keepLogin: (req, res) => {
-    console.log(req.decript);
     db.query(`SELECT * FROM users WHERE id=${db.escape(req.decript.id)}`, (err, result) => {
       if (err) {
-        console.log(err);
         return res.status(500).send(err);
       }
-      console.log("cek result di keeplogin: ", result);
       let token = createToken({ ...result[0] });
       return res.status(200).send({ ...result[0], token });
     });
   },
   verifiedAccount: (req, res) => {
-    console.log(req.decript);
     db.query(`UPDATE users SET status="verified" WHERE id=${db.escape(req.decript.id)}`, (err, result) => {
       if (err) {
         return res.status(500).send({ success: false, message: err });
@@ -118,12 +110,10 @@ module.exports = {
     });
   },
   confirmation: (req, res) => {
-    console.log(req.body);
     db.query(`SELECT id, username, email from users WHERE username=${db.escape(req.body.username)} or email=${db.escape(req.body.email)};`, (err, result) => {
       if (err) {
         return res.status(500).send({ success: false, message: err });
       } else {
-        console.log("cek confirmation:", result);
         let token = createToken({
           id: result[0].id,
           username: result[0].username,
@@ -152,16 +142,12 @@ module.exports = {
     });
   },
   inputPassword: (req, res) => {
-    console.log("cek 156:", req.decript);
-    console.log("cek 157:", req.body);
     let { resetPassword, inputResetPassword } = req.body;
     if (resetPassword !== inputResetPassword) {
       res.status(200).send({ success: false, message: "Password doesn't match" });
     } else {
       let newPassword = hashPassword(resetPassword);
-      console.log("newPassword:", newPassword);
       db.query(`UPDATE users SET password=${db.escape(newPassword)} WHERE id=${db.escape(req.decript.id)};`, (err, result) => {
-        console.log("result:", result);
         if (err) {
           return res.status(500).send(err);
         }
@@ -170,9 +156,6 @@ module.exports = {
     }
   },
   editProfile: (req, res) => {
-    console.log("req.files: ", req.files);
-    console.log("req.body: ", req.body);
-    console.log("req.decript: ", req.decript);
     let { username, password, fullname, bio } = JSON.parse(req.body.data);
     let newPassword = hashPassword(password);
     let updateQuery = `UPDATE users set username=${db.escape(username)}, password=${db.escape(newPassword)}, fullname=${db.escape(fullname)}, bio=${db.escape(bio)}, pfp='/imgProfile/${req.files[0].filename}' where id=${db.escape(
@@ -187,7 +170,6 @@ module.exports = {
     });
   },
   verifyAgain: (req, res) => {
-    console.log("req.decript verifyAgain:", req.decript);
     db.query(`SELECT id, username, email from users WHERE id=${db.escape(req.decript.id)}`, (err, result) => {
       if (err) {
         return res.status(500).send(err);

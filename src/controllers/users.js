@@ -30,7 +30,6 @@ module.exports = {
       } else {
         // res.status(200).send(result);
         const cek = bcrypt.compareSync(req.body.password, result[0].password);
-        console.log(cek);
         if (cek) {
           let token = createToken({ ...result[0] });
           return res.status(200).send({ success: true, message: "Login success", value: { ...result[0], token } });

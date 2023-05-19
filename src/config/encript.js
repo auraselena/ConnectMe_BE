@@ -23,7 +23,6 @@ module.exports = {
         });
       }
 
-      console.log("cek decript", decript);
       req.decript = decript;
       next();
     });

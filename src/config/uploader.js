@@ -15,7 +15,7 @@ module.exports = {
 
         // cek apakah direktori yg dituju sudah ada atau belum
         if (fs.existsSync(pathDir)) {
-          console.log(`Directory ${pathDir} exist`);
+          // console.log(`Directory ${pathDir} exist`);
           cb(null, pathDir);
         } else {
           // bikin direktori baru
@@ -30,11 +30,11 @@ module.exports = {
       },
       filename: (req, file, cb) => {
         let ext = file.originalname.split(".");
-        console.log(ext);
+        // console.log(ext);
 
         // membuat name baru untuk file yang diupload (di-rename)
         let newName = filePrefix + Date.now() + "." + ext[ext.length - 1];
-        console.log("New file Name", newName);
+        // console.log("New file Name", newName);
         cb(null, newName);
       },
     });
